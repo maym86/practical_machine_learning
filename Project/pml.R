@@ -34,5 +34,16 @@ testingFinal = testingFinal[8:length(testingFinal)]
 testingFinal = testingFinal[,remCol == 0] 
 
 # Fit the model to the new data
-rfResFinal = predict(randomForestFit,testingFinal)
+answers = predict(randomForestFit,testingFinal)
 print (rfRes)
+
+#Write the results to files
+pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+
+pml_write_files(answers)

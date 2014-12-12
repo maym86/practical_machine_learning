@@ -1,20 +1,130 @@
+Practcial Machine Learning Course Project
+======
+Michael May 12/12/14
+
 Goals of the Project
+----------------
+In this project, the goal was to use data from accelerometers on the belt, forearm, arm, and dumbbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways and the data was recorded. Given a file containing annotated data, the goal of the project is to predict the manner in which the participants completed the exercise. A machine learning classifier was created to identify each of these classes based on the sensor data.
 
-In this project, the goal was to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways and the data was recorded. Given a file containing annotated data, the goal of the project is to predict the manner in which the particpants completed the exercise. A machine learning classifier was creeated to identify each of these calsses based on the sensor data.
+Methodology
+----------------
+The problem was attempted using a random forest as the classifier and PCA to reduce the dimensionality of the data as there were some highly consolatory variables.
 
-Methodolgy
+Training
+----------------
+The data was loaded using the following commands. The na.strings setting helps the removal of columns later by setting cells with empty space to be NA.
+
+```
+dat = read.csv("pml-training.csv", na.strings=c("", "NA"))
+```
+
+Following this the columns containing NA and empty spaces were removed along with columns that contained information that was unhelpful for the classification such as the index, date and participant's names.
+
+```
+#Clean Data - Remove NaN and other cols - timestamp etc
+dat = dat[8:length(dat)]
+remCol =  colSums(is.na(dat))
+dat = dat[,remCol == 0] 
+```
+
+The next stage was to split the data into a training and validation set so that the performance could be estimated after the classifier had been trained. 
+
+```
+#Create training and testing data
+inTrain = createDataPartition(dat$classe, p = 3/4)[[1]]
+training = dat[ inTrain,]
+validation = dat[-inTrain,]
+```
+
+After this a correlation matrix was plotted with the training data to assess if there were any highly correlated variables. The circles indicate the level of correlation between different variables and this shows that as there some with high correlation PCA could be used to reduce the dimensionality of the data. The figure is availble in this directory under corrplot.png.
 
 
+```
+# plot a correlation matrix
+correlMatrix <- cor(training[, -length(training)])
+corrplot(correlMatrix, type = "lower", tl.cex = 0.8)
+```
+
+The next stage is to compute the random forest using the training data. The inclusion of preprocessing="pca" means that the data is preprocessed using PCA first.
+
+```
+#Compute Random Forest with PCA to remove highly correlated variables
+randomForestFit <- randomForest(classe~., data=training, preprocessing="pca")
+print(randomForestFit)
+```
+
+Validation
+----------------
+The validation data is then used with the model. The confusion matrix estimates the performance of the model on new data. This returns a highly accurate result and therefore indicates that Random Forest may be a good model for predicting this data as it has an accuracy of 99.6%.
 
 
+```
+rfResVal = predict(randomForestFit,validation)
+#Get an estimate of how well the model has been trained
+print ("RF - Cross Validataion"); 
+confusionMatrix(validation$classe, rfResVal)
+```
 
-Analysis
+The results of the confusion matrix command are as follows:
 
+```
+Confusion Matrix and Statistics
 
+          Reference
+Prediction    A    B    C    D    E
+         A 1393    2    0    0    0
+         B    5  943    1    0    0
+         C    0    3  852    0    0
+         D    0    0    7  797    0
+         E    0    0    0    0  901
+
+Overall Statistics
+                                          
+               Accuracy : 0.9963          
+                 95% CI : (0.9942, 0.9978)
+    No Information Rate : 0.2851          
+    P-Value [Acc > NIR] : < 2.2e-16       
+                                          
+                  Kappa : 0.9954          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: A Class: B Class: C Class: D Class: E
+Sensitivity            0.9964   0.9947   0.9907   1.0000   1.0000
+Specificity            0.9994   0.9985   0.9993   0.9983   1.0000
+Pos Pred Value         0.9986   0.9937   0.9965   0.9913   1.0000
+Neg Pred Value         0.9986   0.9987   0.9980   1.0000   1.0000
+Prevalence             0.2851   0.1933   0.1754   0.1625   0.1837
+Detection Rate         0.2841   0.1923   0.1737   0.1625   0.1837
+Detection Prevalence   0.2845   0.1935   0.1743   0.1639   0.1837
+Balanced Accuracy      0.9979   0.9966   0.9950   0.9991   1.0000
+```
+
+Testing
+----------------
+Finally, the new test data is loaded, the same columns are removed as in the previously and the model is applied to make predictions. The classes are returned for each of the 20 rows.
+
+```
+# Application of the model to new data set
+testingFinal = read.csv("pml-testing.csv", na.strings=c("", "NA"))
+testingFinal = testingFinal[8:length(testingFinal)]
+testingFinal = testingFinal[,remCol == 0] 
+
+# Fit the model to the new data
+rfResFinal = predict(randomForestFit,testingFinal)
+print (rfRes)
+```
 
 Results
+----------------
+```
+ 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 
+ B  A  B  A  A  E  D  B  A  A  B  C  B  A  E  E  A  B  B  B 
+Levels: A B C D E
+```
 
-
+Upon submitting these results the for the course project they received a score of 20/20.
 
 
 
