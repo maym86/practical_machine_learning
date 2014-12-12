@@ -1,9 +1,8 @@
 library(caret)
-
+library(corrplot)
 set.seed(33355)
 
 setwd("C:/Users/gleesonm/OneDrive - HERE Global B.V-/Projects/practical_machine_learning/Project")
-
 dat = read.csv("pml-training.csv", na.strings=c("", "NA"))
 
 #Clean Data - Remove NaN and other cols - timestamp etc
@@ -12,24 +11,28 @@ remCol =  colSums(is.na(dat))
 dat = dat[,remCol == 0] 
 
 #Create training and testing data
-
 inTrain = createDataPartition(dat$classe, p = 3/4)[[1]]
 training = dat[ inTrain,]
-testing = dat[-inTrain,]
+validation = dat[-inTrain,]
 
-#Compute Rantdom Forest with PCA
+# plot a correlation matrix
+correlMatrix <- cor(training[, -length(training)])
+corrplot(correlMatrix, type = "lower", tl.cex = 0.8)
 
-randomForestFit <- randomForest(classe~., data=training, preProcess="pca")
-rfRes = predict(randomForestFit,testing)
-print ("rf - testing"); confusionMatrix(testing$classe, rfRes)
+#Compute Rantdom Forest with PCA to remove corelations
+randomForestFit <- randomForest(classe~., data=training, preprocessing="pca")
+print(randomForestFit)
+rfResVal = predict(randomForestFit,validation)
 
+#Get an estimate of how well the model has been trained
+print ("RF - Cross Validataion"); 
+confusionMatrix(validation$classe, rfResVal)
 
+# Application of the model to new data set
+testingFinal = read.csv("pml-testing.csv", na.strings=c("", "NA"))
+testingFinal = testingFinal[8:length(testingFinal)]
+testingFinal = testingFinal[,remCol == 0] 
 
-# Validation data set
-
-val = read.csv("pml-testing.csv", na.strings=c("", "NA"))
-val = val[8:length(val)]
-val = val[,remCol == 0] 
-
-rfRes = predict(randomForestFit,val)
-print ("rf - validation"); confusionMatrix(val$classe, rfRes)
+# Fit the model to the new data
+rfResFinal = predict(randomForestFit,testingFinal)
+print (rfRes)
