@@ -7,32 +7,29 @@ setwd("C:/Users/gleesonm/OneDrive - HERE Global B.V-/Projects/practical_machine_
 dat = read.csv("pml-training.csv", na.strings=c("", "NA"))
 
 #Clean Data - Remove NaN and other cols - timestamp etc
-dat = dat[7:length(dat)]
-dat = dat[,colSums(is.na(dat)) == 0] 
-
-print(attributes(dat))
+dat = dat[8:length(dat)]
+remCol =  colSums(is.na(dat))
+dat = dat[,remCol == 0] 
 
 #Create training and testing data
 
 inTrain = createDataPartition(dat$classe, p = 3/4)[[1]]
 training = dat[ inTrain,]
 testing = dat[-inTrain,]
-print(attributes(testing))
+
+#Compute Rantdom Forest with PCA
+
+randomForestFit <- randomForest(classe~., data=training, preProcess="pca")
+rfRes = predict(randomForestFit,testing)
+print ("rf - testing"); confusionMatrix(testing$classe, rfRes)
 
 
-#Perform PCA
-#detect outliers?
 
+# Validation data set
 
-#preProcValues <- preProcess(training, method = "pca", thresh = 0.8)
+val = read.csv("pml-testing.csv", na.strings=c("", "NA"))
+val = val[8:length(val)]
+val = val[,remCol == 0] 
 
-
-#Compute Rantdom Forest
-
-randomForest <- train(classe~., method="rf",data=training)
-
-rfRes = predict(randomForest,testing)
-
-print ("rf"); confusionMatrix(testing$classe, rfRes)
-
-validation = read.csv("pml-testing.csv")
+rfRes = predict(randomForestFit,val)
+print ("rf - validation"); confusionMatrix(val$classe, rfRes)
