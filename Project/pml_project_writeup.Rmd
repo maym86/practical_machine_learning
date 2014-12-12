@@ -1,1 +1,21 @@
 Goals of the Project
+
+In this project, the goal was to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways and the data was recorded. Given a file containing annotated data, the goal of the project is to predict the manner in which the particpants completed the exercise. A machine learning classifier was creeated to identify each of these calsses based on the sensor data.
+
+Methodolgy
+
+
+
+
+
+Analysis
+
+
+
+Results
+
+
+
+
+
+
