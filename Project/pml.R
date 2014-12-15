@@ -1,5 +1,6 @@
 library(caret)
 library(corrplot)
+library(randomForest)
 set.seed(33355)
 
 setwd("C:/Users/gleesonm/OneDrive - HERE Global B.V-/Projects/practical_machine_learning/Project")
@@ -26,7 +27,12 @@ rfResVal = predict(randomForestFit,validation)
 
 #Get an estimate of how well the model has been trained
 print ("RF - Cross Validataion"); 
+print(rfResVal)
 confusionMatrix(validation$classe, rfResVal)
+
+accuracy = confusionMatrix(validation$classe, rfResVal)$overall['Accuracy'] 
+outOfSampleError = (1 - accuracy) * 100
+print("Out of sample error estimation: "); print(round(outOfSampleError, digits = 2))
 
 # Application of the model to new data set
 testingFinal = read.csv("pml-testing.csv", na.strings=c("", "NA"))
@@ -35,7 +41,7 @@ testingFinal = testingFinal[,remCol == 0]
 
 # Fit the model to the new data
 answers = predict(randomForestFit,testingFinal)
-print (rfRes)
+print (answers)
 
 #Write the results to files
 pml_write_files = function(x){

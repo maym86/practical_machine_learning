@@ -88,7 +88,7 @@ print(randomForestFit)</code></pre>
 </div>
 <div id="validation" class="section level2">
 <h2>Validation</h2>
-<p>The validation data is then used with the model. The confusion matrix estimates the performance of the model on new data. This returns a highly accurate result and therefore indicates that random forest may be a good model for predicting this data as it has an accuracy of 99.6% with a 95% confidence interval of +-0.0018.</p>
+<p>The validation data is then used with the model. The confusion matrix estimates the performance of the model on new data. This returns a highly accurate result and therefore indicates that random forest may be a good model for predicting this data as it has an accuracy of 99.6% with 95% confidence intervals of 0.9942 and 0.9978.</p>
 <pre><code>rfResVal = predict(randomForestFit,validation)
 #Get an estimate of how well the model has been trained
 print (&quot;RF - Cross Validataion&quot;); 
