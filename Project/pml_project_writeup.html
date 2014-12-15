@@ -77,7 +77,7 @@ dat = dat[,remCol == 0] </code></pre>
 inTrain = createDataPartition(dat$classe, p = 3/4)[[1]]
 training = dat[ inTrain,]
 validation = dat[-inTrain,]</code></pre>
-<p>After this a correlation matrix was plotted with the training data to assess if there were any highly correlated variables. The circles indicate the level of correlation between different variables and this shows that as there some with high correlation PCA could be used to reduce the dimensionality of the data.</p>
+<p>After this a correlation matrix was plotted with the training data to assess if there were any highly correlated variables. The circles indicate the level of correlation between different variables and this shows that as there some with high correlation PCA could be used to reduce the dimensionality of the data. The figure is availble in this directory under corrplot.png.</p>
 <pre><code># plot a correlation matrix
 correlMatrix &lt;- cor(training[, -length(training)])
 corrplot(correlMatrix, type = &quot;lower&quot;, tl.cex = 0.8)</code></pre>
@@ -88,7 +88,7 @@ print(randomForestFit)</code></pre>
 </div>
 <div id="validation" class="section level2">
 <h2>Validation</h2>
-<p>The validation data is then used with the model. The confusion matrix estimates the performance of the model on new data. This returns a highly accurate result and therefore indicates that Random Forest may be a good model for predicting this data as it has an accuracy of 99.6%.</p>
+<p>The validation data is then used with the model. The confusion matrix estimates the performance of the model on new data. This returns a highly accurate result and therefore indicates that random forest may be a good model for predicting this data as it has an accuracy of 99.6% with a 95% confidence interval of +-0.0018.</p>
 <pre><code>rfResVal = predict(randomForestFit,validation)
 #Get an estimate of how well the model has been trained
 print (&quot;RF - Cross Validataion&quot;); 
@@ -143,6 +143,7 @@ print (rfRes)</code></pre>
 <pre><code> 1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 
  B  A  B  A  A  E  D  B  A  A  B  C  B  A  E  E  A  B  B  B 
 Levels: A B C D E</code></pre>
+<p>Upon submitting these results the for the course project they received a score of 20/20.</p>
 </div>
 </div>
 

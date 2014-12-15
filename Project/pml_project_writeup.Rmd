@@ -55,7 +55,7 @@ print(randomForestFit)
 
 Validation
 ----------------
-The validation data is then used with the model. The confusion matrix estimates the performance of the model on new data. This returns a highly accurate result and therefore indicates that Random Forest may be a good model for predicting this data as it has an accuracy of 99.6%.
+The validation data is then used with the model. The confusion matrix estimates the performance of the model on new data. This returns a highly accurate result and therefore indicates that random forest may be a good model for predicting this data as it has an accuracy of 99.6% with a 95% confidence interval of +-0.0018.
 
 
 ```
